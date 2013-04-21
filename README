@@ -1,0 +1,8 @@
+
+Scan for MAC address in LAN.
+
+Format:
+	mac-trace ip1 ip2
+
+ip1: from ip address
+ip2: to ip address

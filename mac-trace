@@ -1,0 +1,64 @@
+#! /bin/sh
+
+for ((i=1; a <=$#; i+=1)); do 
+	if [ "$i" = "-h" ]; then
+		echo "Please input as: "
+		echo "	$0 ip1 ip2"
+		exit 0
+	fi
+done
+
+if [ "$#" -lt "2" ]; then
+	echo "Please make sure your input as:" 
+	echo "	$0 ip1 ip2" 
+	exit 1
+fi
+
+LOG=/tmp/iptrace.log
+
+START=$1
+START1=`echo $START | cut -d '.' -f 1`
+START2=`echo $START | cut -d '.' -f 2`
+START3=`echo $START | cut -d '.' -f 3`
+START4=`echo $START | cut -d '.' -f 4`
+
+END=$2
+END1=`echo $END | cut -d '.' -f 1`
+END2=`echo $END | cut -d '.' -f 2`
+END3=`echo $END | cut -d '.' -f 3`
+END4=`echo $END | cut -d '.' -f 4`
+
+[ "$START1" -lt "0" ] && START1=0
+[ "$START2" -lt "0" ] && START2=0
+[ "$START3" -lt "0" ] && START3=0
+[ "$START4" -le "0" ] && START4=1
+
+[ "$END1" -gt "255" ] && END1=255
+[ "$END2" -gt "255" ] && END2=255
+[ "$END3" -gt "255" ] && END3=255
+[ "$END4" -gt "255" ] && END4=255
+
+echo "scan from $START1.$START2.$START3.$START4 to $END1.$END2.$END3.$END4" > $LOG
+echo "Address		HWtype  HWaddress		Iface" >> $LOG
+
+for ((a=$START1; a <= $END1; a += 1)); do
+	for ((b=$START2; b <= $END2; b += 1)); do
+		for ((c=$START3; c <= $END3; c += 1)); do
+			for ((d=$START4; d <= $END4; d += 1)); do
+				IP="$a.$b.$c.$d"
+				ping $IP -W 1 -c 1 > /dev/null
+
+				if [ $? == 0 ]; then
+					INFO=`arp -a | grep $IP`
+					IP=`echo $INFO | cut -d '(' -f 2 | cut -d ')' -f 1`
+					MAC=`echo $INFO | cut -d ' ' -f 4`
+					TYPE=`echo $INFO | cut -d '[' -f 2 | cut -d ']' -f 1` 
+					IFACE=`echo $INFO | cut -d ' ' -f 7`
+					echo "$IP	$TYPE	$MAC  $FLAGS	$IFACE" >> $LOG
+				fi
+			done
+		done
+	done
+done 
+
+cat $LOG
