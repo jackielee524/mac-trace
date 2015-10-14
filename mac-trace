@@ -12,9 +12,9 @@ function print_help() {
 	fi
 
 	echo "Format:"
-	echo "	$0 ip1 ip2"
-	echo "ip1: from ip address"
-	echo "ip2: to ip address"
+	echo "	$0 start_ip end_ip"
+	echo "start_ip: the start ip address"
+	echo "end_ip: the end ip address"
 
 	return $pret
 }
@@ -33,9 +33,9 @@ if [ "$#" -lt "2" ]; then
 	fi
 
 	echo "Format:"
-	echo "	$0 ip1 ip2"
-	echo "ip1: from ip address"
-	echo "ip2: to ip address"
+	echo "	$0 start_ip end_ip"
+	echo "start_ip: the start ip address"
+	echo "end_ip: the end ip address"
 
 	#return $pret
 	exit $pret
