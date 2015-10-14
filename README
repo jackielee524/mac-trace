@@ -2,7 +2,7 @@
 Scan for MAC address in LAN.
 
 Format:
-	mac-trace ip1 ip2
+	mac-trace start_ip end_ip
 
-ip1: from ip address
-ip2: to ip address
+start_ip: the start ip address
+end_ip: the end ip address
